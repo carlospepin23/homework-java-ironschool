@@ -10,7 +10,7 @@ public class Application {
     private String schoolName;
 
     //MAPS
-    private Map<String, Course> teacherMap; //change later for teacher class
+    private Map<String, Teacher> teacherMap;
     private Map<String, Course> courseMap;
     private Map<String, Course> studentMap; //change later for student class
 
@@ -31,41 +31,20 @@ public class Application {
     public void initialization(){
 
         System.out.println("Welcome to the school management system. Please enter the name of the school: ");
-        this.schoolName=scanner.nextLine();
+        while (true) {
+            this.schoolName = scanner.nextLine();
+            if (!schoolName.matches("\\d+") && !schoolName.isEmpty()) { //checks if it has a number or is empty
+                break;
+            }
+            System.out.println("Invalid input. The school name cannot be a number or an empty string. Please enter the name of the school: ");
+        }
         System.out.println("The school "+schoolName+" has been created successfully.");
-
-        System.out.println(); //empty line
-        System.out.println("How many teachers should be added to the system?: ");
-        int numberOfTeachers=scanner.nextInt();
-
-        for(int i=0; i<numberOfTeachers; i++){
-            teacherCreator();
-        }
-        System.out.println(); //empty line
-        System.out.println("The "+ numberOfTeachers+" teachers have been added successfully.");
-
-        System.out.println(); //empty line
-        System.out.println("How many courses should be added to the system?: ");
-        int numberOfCourses=scanner.nextInt();
-
-        for(int i=0; i<numberOfCourses; i++){
-            courseCreator();
-        }
-        System.out.println(); //empty line
-        System.out.println("The "+ numberOfCourses+" courses have been added successfully.");
-
-        System.out.println(); //empty line
-        System.out.println("How many students should be added to the system?: ");
-        int numberOfStudents=scanner.nextInt();
-
-        for(int i=0; i<numberOfStudents; i++){
-            studentCreator();
-        }
-        System.out.println(); //empty line
-        System.out.println("The "+ numberOfStudents+" students have been added successfully.");
-
         System.out.println(); //empty line
 
+        //create the maps
+        ioMapManager(variableType.teacher);
+        ioMapManager(variableType.course);
+        ioMapManager(variableType.student);
     }
 
     public void schoolManagementSystem() {
@@ -80,17 +59,64 @@ public class Application {
         System.out.println("Thank you for using the school management system. Goodbye!");
     }
 
-    public void teacherCreator() {
-//        fill
+    public void ioMapManager(variableType vType){
+        while(true){
+            System.out.println("How many "+vType+"s should be added to the system?: ");
+            try {
+                int number = Integer.parseInt(scanner.nextLine());
 
+                if (number < 1) {
+                    System.out.println("Invalid input. The number of "+ vType+" cannot be zero or less.");
+                } else {
+                    for(int i=0; i<number; i++) mapCreator(vType); //creates map
+
+                    System.out.println(); //empty line
+                    System.out.println("The "+ number+" "+vType+" have been added successfully.");
+                    System.out.println(); //empty line
+                    break;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // clear the scanner
+            }
+        }
     }
 
-    public void courseCreator() {
-//        fill
-    }
+    public void mapCreator(variableType vType){
+        String name = "";
+        while (true) {
+            System.out.println("Please enter the name of the new"+vType+": ");
+            name = scanner.nextLine();
+            if (!name.matches(".*\\d.*") && !name.isEmpty()) { //checks if it has a number or is empty
+                break;
+            }
+            System.out.println("Invalid input. The name cannot contain numbers or be an empty string. Please enter the name again: ");
+        }
 
-    public void studentCreator() {
-//        fill
+        double value = 0;
+        while (true) {
+            try {
+                if(vType.equals(variableType.teacher)){
+                    System.out.println("Please enter the salary of "+name+": ");
+                    value = Double.parseDouble(scanner.nextLine());
+                }else if(vType.equals(variableType.course)){
+                    System.out.println("Please enter the price of "+name+": ");
+                    value = Double.parseDouble(scanner.nextLine());
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+
+        if(vType.equals(variableType.teacher)){
+            Teacher teacher=new Teacher(name, value);
+            teacherMap.put(teacher.getTeacherId(), teacher);
+        }else if(vType.equals(variableType.course)){
+            Course course=new Course(name, value);
+            courseMap.put(course.getCourseId(), course);
+        }
+        //finish when student class is done
     }
 
     public void displaySchoolInfo() {
@@ -98,9 +124,9 @@ public class Application {
         System.out.println();
         System.out.println(schoolName+" Management System");
         System.out.println("====================================");
-        System.out.println("Teachers: " + teacherMap.size()); //change for actual size
+        System.out.println("Teachers: " + teacherMap.size());
         System.out.println("Courses: " + courseMap.size());
-        System.out.println("Students: " + studentMap.size()); //change for actual size
+        System.out.println("Students: " + studentMap.size());
         System.out.println(); //empty line
     }
 
@@ -123,6 +149,12 @@ public class Application {
 
     public void commandManager(String input){
         String[] parts = input.split(" ");
+
+        //Useful info:
+        //parts[0] will be the command
+        //parts[1] will be the first argument (if any)
+        //parts[2] will be the second argument (if any)
+
         Command command;
         try {
             command = Command.valueOf(parts[0].toUpperCase());
@@ -131,32 +163,38 @@ public class Application {
             switch (command) {
                 case ENROLL:
                     // Enroll student
-                    System.out.println("working test"); //to be sure it works
 
                     break;
                 case ASSIGN:
-                    // Assign teacher
+//                    courseMap.get(parts[1]).setTeacher(teacherMap.get(parts[2]));
                     break;
                 case SHOW_COURSES:
                     // Show courses
+
                     break;
                 case LOOKUP_COURSE:
                     // Lookup course
+
                     break;
                 case SHOW_STUDENTS:
                     // Show students
+
                     break;
                 case LOOKUP_STUDENT:
                     // Lookup student
+
                     break;
                 case SHOW_TEACHERS:
                     // Show teachers
+
                     break;
                 case LOOKUP_TEACHER:
                     // Lookup teacher
+
                     break;
                 case SHOW_PROFIT:
                     // Show profit
+
                     break;
                 case EXIT:
                     exit = true;
