@@ -41,10 +41,10 @@ public class Application {
         System.out.println("The school "+schoolName+" has been created successfully.");
         System.out.println(); //empty line
 
-        ioNumericManager(variableType.teachers);
-        ioNumericManager(variableType.courses);
-        ioNumericManager(variableType.students);
-
+        //create the maps
+        ioMapManager(variableType.teacher);
+        ioMapManager(variableType.course);
+        ioMapManager(variableType.student);
     }
 
     public void schoolManagementSystem() {
@@ -59,40 +59,64 @@ public class Application {
         System.out.println("Thank you for using the school management system. Goodbye!");
     }
 
-    public void ioNumericManager(variableType vType){
-        System.out.println("How many "+vType+" should be added to the system?: ");
-        try {
-            int number = scanner.nextInt();
+    public void ioMapManager(variableType vType){
+        while(true){
+            System.out.println("How many "+vType+"s should be added to the system?: ");
+            try {
+                int number = Integer.parseInt(scanner.nextLine());
 
-            if (number < 1) {
-                System.out.println("Invalid input. The number of "+ vType+" cannot be zero or less.");
-            } else {
-                for(int i=0; i<number; i++) {
-                    if (vType.equals(variableType.teachers)) teacherCreator();
-                    else if (vType.equals(variableType.courses)) courseCreator();
-                    else if (vType.equals(variableType.students)) studentCreator();
+                if (number < 1) {
+                    System.out.println("Invalid input. The number of "+ vType+" cannot be zero or less.");
+                } else {
+                    for(int i=0; i<number; i++) mapCreator(vType); //creates map
 
+                    System.out.println(); //empty line
+                    System.out.println("The "+ number+" "+vType+" have been added successfully.");
+                    System.out.println(); //empty line
+                    break;
                 }
-                System.out.println(); //empty line
-                System.out.println("The "+ number+" "+vType+" have been added successfully.");
-                System.out.println(); //empty line
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // clear the scanner
             }
-        } catch (Exception e) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.nextLine(); // clear the scanner
         }
     }
 
-    public void teacherCreator() {
-//        fill
-    }
+    public void mapCreator(variableType vType){
+        String name = "";
+        while (true) {
+            System.out.println("Please enter the name of the new"+vType+": ");
+            name = scanner.nextLine();
+            if (!name.matches(".*\\d.*") && !name.isEmpty()) { //checks if it has a number or is empty
+                break;
+            }
+            System.out.println("Invalid input. The name cannot contain numbers or be an empty string. Please enter the name again: ");
+        }
 
-    public void courseCreator() {
-//        fill
-    }
+        double value = 0;
+        while (true) {
+            try {
+                if(vType.equals(variableType.teacher)){
+                    System.out.println("Please enter the salary of "+name+": ");
+                    value = Double.parseDouble(scanner.nextLine());
+                }else if(vType.equals(variableType.course)){
+                    System.out.println("Please enter the price of "+name+": ");
+                    value = Double.parseDouble(scanner.nextLine());
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
 
-    public void studentCreator() {
-//        fill
+        if(vType.equals(variableType.teacher)){
+            Teacher teacher=new Teacher(name, value);
+            teacherMap.put(teacher.getTeacherId(), teacher);
+        }else if(vType.equals(variableType.course)){
+            Course course=new Course(name, value);
+            courseMap.put(course.getCourseId(), course);
+        }
+        //finish when student class is done
     }
 
     public void displaySchoolInfo() {
