@@ -9,7 +9,7 @@ public class Course {
     private String name;
     private double price;
     private double money_earned;
-//    private Teacher teacher;
+    private Teacher teacher;
 
     //constructor
     public Course(String name, double price) {
@@ -53,15 +53,23 @@ public class Course {
         this.money_earned = money_earned;
     }
 
-//    public Teacher getTeacher() {
-//        return teacher;
-//    }
-//
-//    public void setTeacher(double teacher) {
-//        this.teacher = teacher;
-//    }
+    public Teacher getTeacher() {
+        return teacher;
+    }
 
-    //add to_string method when the teacher class is completed
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
 
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseId='" + courseId + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", money_earned=" + money_earned +
+                ", teacher=" + teacher +
+                '}';
+    }
 }
 
