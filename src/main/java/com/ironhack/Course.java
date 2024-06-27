@@ -17,6 +17,7 @@ public class Course {
         this.name = name;
         this.price = price;
         this.money_earned = 0;
+        this.teacher = null;
     }
 
     //getters and setters
