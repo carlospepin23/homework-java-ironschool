@@ -29,7 +29,17 @@ public class Application {
         schoolManagementSystem();
     }
 
-    public void initialization(){
+    //made for testing purposes
+    Application(String schoolName, Map<String, Teacher> teacherMap, Map<String, Course> courseMap, Map<String, Student> studentMap){
+        this.schoolName=schoolName;
+        this.teacherMap=teacherMap;
+        this.courseMap=courseMap;
+        this.studentMap=studentMap;
+        this.scanner=new Scanner(System.in);
+//        schoolManagementSystem();
+    }
+
+    private void initialization(){
 
         System.out.println("Welcome to the school management system. Please enter the name of the school: ");
         while (true) {
@@ -48,7 +58,7 @@ public class Application {
         manageIOMap(variableType.student);
     }
 
-    public void schoolManagementSystem() {
+    private void schoolManagementSystem() {
 
         while (!exit) {
             displaySchoolInfo();
@@ -60,7 +70,7 @@ public class Application {
         System.out.println("Thank you for using the "+schoolName+" management system. Goodbye!");
     }
 
-    public void manageIOMap(variableType vType){
+    private void manageIOMap(variableType vType){
         while(true){
             System.out.println("How many "+vType+"s should be added to the system?: ");
             try {
@@ -83,7 +93,7 @@ public class Application {
         }
     }
 
-    public void mapCreator(variableType vType){
+    private void mapCreator(variableType vType){
         String name = "";
         String address = "";
         String email = "";
@@ -356,7 +366,7 @@ public class Application {
         }
     }
 
-    public void showProfit(){
+    public double showProfit(){
         Collection<Course> courses=courseMap.values();
         Collection<Teacher> teachers=teacherMap.values();
         double profit=0;
@@ -368,6 +378,8 @@ public class Application {
         }
         System.out.println("The profit of the school is: "+profit);
         System.out.println("------------------------");
+
+        return profit;
     }
 
     public String getSchoolName() {
@@ -384,5 +396,17 @@ public class Application {
 
     public Map<String, Student> getStudentMap() {
         return studentMap;
+    }
+
+    public void setTeacherMap(Map<String, Teacher> teacherMap) {
+        this.teacherMap = teacherMap;
+    }
+
+    public void setCourseMap(Map<String, Course> courseMap) {
+        this.courseMap = courseMap;
+    }
+
+    public void setStudentMap(Map<String, Student> studentMap) {
+        this.studentMap = studentMap;
     }
 }
