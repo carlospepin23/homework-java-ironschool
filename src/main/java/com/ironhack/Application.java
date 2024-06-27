@@ -1,5 +1,6 @@
 package com.ironhack;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -220,7 +221,16 @@ public class Application {
 
                     break;
                 case SHOW_PROFIT:
-                    // Show profit
+                    Collection<Course> courses=courseMap.values();
+                    Collection<Teacher> teachers=teacherMap.values();
+                    double profit=0;
+                    for(Course course:courses){
+                        profit+=course.getPrice();
+                    }
+                    for(Teacher teacher:teachers){
+                        profit-=teacher.getSalary();
+                    }
+                    System.out.println("The profit of the school is: "+profit);
 
                     break;
                 case EXIT:
