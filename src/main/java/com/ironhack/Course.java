@@ -50,8 +50,8 @@ public class Course {
         return money_earned;
     }
 
-    public void setMoney_earned(double money_earned) {
-        this.money_earned = money_earned;
+    public void setMoney_earned() {
+        this.money_earned=this.getPrice()-this.getTeacher().getSalary();
     }
 
     public Teacher getTeacher() {
