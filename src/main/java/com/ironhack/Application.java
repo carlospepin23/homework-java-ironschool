@@ -12,7 +12,7 @@ public class Application {
     //MAPS
     private Map<String, Teacher> teacherMap;
     private Map<String, Course> courseMap;
-    private Map<String, Course> studentMap; //change later for student class
+    private Map<String, Student> studentMap;
 
     private boolean exit = false; //can be implemented other way so it is nice
 
@@ -84,6 +84,8 @@ public class Application {
 
     public void mapCreator(variableType vType){
         String name = "";
+        String address = "";
+        String email = "";
         while (true) {
             System.out.println("Please enter the name of the new "+vType+": ");
             name = scanner.nextLine();
@@ -99,24 +101,49 @@ public class Application {
                 if(vType.equals(variableType.teacher)){
                     System.out.println("Please enter the salary of "+name+": ");
                     value = Double.parseDouble(scanner.nextLine());
+                    if (value < 1) {
+                        throw new IllegalArgumentException("Invalid input. The salary cannot be less than 1. Please enter the salary again: ");
+                    }
+
                 }else if(vType.equals(variableType.course)){
                     System.out.println("Please enter the price of "+name+": ");
                     value = Double.parseDouble(scanner.nextLine());
+                    if (value < 1) {
+                        throw new IllegalArgumentException("Invalid input. The price cannot be less than 1. Please enter the price again: ");
+                    }
+
+                }else if(vType.equals(variableType.student)){
+                    System.out.println("Please enter the address of "+name+": ");
+                    address = scanner.nextLine();
+                    System.out.println("Please enter the email of "+name+": ");
+                    email = scanner.nextLine();
+
+                    //email validation
+                    if (!(email.contains("@") && ((email.endsWith(".edu") || email.endsWith(".org") || email.endsWith(".com"))))) {
+                        throw new IllegalArgumentException("Invalid email format. Email must contain '@' and end with '.edu', '.org', or '.com'.");
+                    }
                 }
+
                 break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
+            }
+            catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
         }
 
         if(vType.equals(variableType.teacher)){
             Teacher teacher=new Teacher(name, value);
             teacherMap.put(teacher.getTeacherId(), teacher);
+
         }else if(vType.equals(variableType.course)){
             Course course=new Course(name, value);
             courseMap.put(course.getCourseId(), course);
+
+        }else {
+            Student student=new Student(name, address, email);
+            studentMap.put(student.getStudentId(), student);
         }
-        //finish when student class is done
+
     }
 
     public void displaySchoolInfo() {
