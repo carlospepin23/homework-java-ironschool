@@ -13,7 +13,7 @@ public class Course {
 
     //constructor
     public Course(String name, double price) {
-        this.courseId = UUID.randomUUID().toString();
+        this.courseId = UUID.randomUUID().toString().substring(0, 4);
         this.name = name;
         this.price = price;
         this.money_earned = 0;

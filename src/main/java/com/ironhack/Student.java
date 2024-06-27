@@ -10,7 +10,7 @@ public class Student {
     private Course course;
 
     public Student(String name, String address, String email) {
-        this.studentId = UUID.randomUUID().toString();
+        this.studentId = UUID.randomUUID().toString().substring(0, 4);
         this.name = name;
         this.address = address;
         this.email = email;
