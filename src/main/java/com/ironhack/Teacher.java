@@ -8,7 +8,7 @@ public class Teacher {
     private double salary;
 
     public Teacher(String name, double salary) {
-        this.teacherId = UUID.randomUUID().toString();
+        this.teacherId = UUID.randomUUID().toString().substring(0, 4);
         this.name = name;
         this.salary = salary;
     }

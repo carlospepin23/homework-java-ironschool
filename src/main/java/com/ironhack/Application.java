@@ -29,7 +29,17 @@ public class Application {
         schoolManagementSystem();
     }
 
-    public void initialization(){
+    //made for testing purposes
+    Application(String schoolName, Map<String, Teacher> teacherMap, Map<String, Course> courseMap, Map<String, Student> studentMap){
+        this.schoolName=schoolName;
+        this.teacherMap=teacherMap;
+        this.courseMap=courseMap;
+        this.studentMap=studentMap;
+        this.scanner=new Scanner(System.in);
+//        schoolManagementSystem();
+    }
+
+    private void initialization(){
 
         System.out.println("Welcome to the school management system. Please enter the name of the school: ");
         while (true) {
@@ -43,12 +53,12 @@ public class Application {
         System.out.println(); //empty line
 
         //create the maps
-        ioMapManager(variableType.teacher);
-        ioMapManager(variableType.course);
-        ioMapManager(variableType.student);
+        manageIOMap(variableType.teacher);
+        manageIOMap(variableType.course);
+        manageIOMap(variableType.student);
     }
 
-    public void schoolManagementSystem() {
+    private void schoolManagementSystem() {
 
         while (!exit) {
             displaySchoolInfo();
@@ -57,10 +67,10 @@ public class Application {
             String input=scanner.nextLine();
             commandManager(input);
         }
-        System.out.println("Thank you for using the school management system. Goodbye!");
+        System.out.println("Thank you for using the "+schoolName+" management system. Goodbye!");
     }
 
-    public void ioMapManager(variableType vType){
+    private void manageIOMap(variableType vType){
         while(true){
             System.out.println("How many "+vType+"s should be added to the system?: ");
             try {
@@ -83,7 +93,7 @@ public class Application {
         }
     }
 
-    public void mapCreator(variableType vType){
+    private void mapCreator(variableType vType){
         String name = "";
         String address = "";
         String email = "";
@@ -147,8 +157,8 @@ public class Application {
 
     }
 
-    public void displaySchoolInfo() {
-        //for all the info put an emoji *look for them*
+    private void displaySchoolInfo() {
+
         System.out.println();
         System.out.println(schoolName+" Management System");
         System.out.println("====================================");
@@ -158,17 +168,17 @@ public class Application {
         System.out.println(); //empty line
     }
 
-    public void displayCommandInfo() {
+    private void displayCommandInfo() {
         System.out.println("Please enter a command from the list below: ");
         System.out.println();
-        System.out.println("ENROLL: Enroll student");
-        System.out.println("ASSIGN: Assign teacher");
+        System.out.println("ENROLL [STUDENT_ID] [COURSE_ID] : Enroll student");
+        System.out.println("ASSIGN [TEACHER_ID] [COURSE_ID]: Assign teacher");
         System.out.println("SHOW_COURSES: Show courses");
-        System.out.println("LOOKUP_COURSE: Lookup course");
+        System.out.println("LOOKUP_COURSE [COURSE_ID]: Lookup course");
         System.out.println("SHOW_STUDENTS: Show students");
-        System.out.println("LOOKUP_STUDENT: Lookup student");
+        System.out.println("LOOKUP_STUDENT [STUDENT_ID]: Lookup student");
         System.out.println("SHOW_TEACHERS: Show teachers");
-        System.out.println("LOOKUP_TEACHER: Lookup teacher");
+        System.out.println("LOOKUP_TEACHER [TEACHER_ID]: Lookup teacher");
         System.out.println("SHOW_PROFIT: Show profit");
         System.out.println("EXIT: Exit the program");
         System.out.println(); //empty line
@@ -177,11 +187,6 @@ public class Application {
 
     public void commandManager(String input){
         String[] parts = input.split(" ");
-        boolean found;
-        String teacherName;
-        String courseName;
-        Teacher foundTeacher;
-        Course foundCourse;
 
         //Useful info:
         //parts[0] will be the command
@@ -195,155 +200,31 @@ public class Application {
 
             switch (command) {
                 case ENROLL:
-                    System.out.println("Please enter the name of the student you want to enroll: ");
-                    String studentName = scanner.nextLine();
-                    System.out.println("Please enter the name of the course you want to enroll the student in: ");
-                    courseName = scanner.nextLine();
-                    Student foundStudent = null;
-                    foundCourse = null;
-                    for (Student student : studentMap.values()) {
-                        if (student.getName().equalsIgnoreCase(studentName)) {
-                            foundStudent = student;
-                            break;
-                        }
-                    }
-                    for (Course course : courseMap.values()) {
-                        if (course.getName().equalsIgnoreCase(courseName)) {
-                            foundCourse = course;
-                            break;
-                        }
-                    }
-                    if (foundStudent != null && foundCourse != null) {
-                        foundStudent.setCourse(foundCourse);
-                        System.out.println("Student " + foundStudent.getName() + " has been enrolled in course " + foundCourse.getName() + ".");
-                    } else {
-                        System.out.println("Either the student or the course was not found.");
-                    }
+                    enroll(parts[1],parts[2]);
                     break;
                 case ASSIGN:
-                    System.out.println("Please enter the name of the teacher you want to assign: ");
-                    teacherName = scanner.nextLine();
-                    System.out.println("Please enter the name of the course you want to assign the teacher to: ");
-                    courseName = scanner.nextLine();
-                    foundTeacher = null;
-                    foundCourse = null;
-                    for (Teacher teacher : teacherMap.values()) {
-                        if (teacher.getName().equalsIgnoreCase(teacherName)) {
-                            foundTeacher = teacher;
-                            break;
-                        }
-                    }
-                    for (Course course : courseMap.values()) {
-                        if (course.getName().equalsIgnoreCase(courseName)) {
-                            foundCourse = course;
-                            break;
-                        }
-                    }
-                    if (foundTeacher != null && foundCourse != null) {
-                        foundCourse.setTeacher(foundTeacher);
-                        System.out.println("Teacher " + foundTeacher.getName() + " has been assigned to course " + foundCourse.getName() + ".");
-                    } else {
-                        System.out.println("Either the teacher or the course was not found.");
-                    }
+                   assign(parts[1],parts[2]);
                     break;
                 case SHOW_COURSES:
-                    // Show courses
-                    for (Course course : courseMap.values()) {
-                        System.out.println("Course ID: " + course.getCourseId());
-                        System.out.println("Course Name: " + course.getName());
-                        System.out.println("Price: $" + course.getPrice());
-                        System.out.println("Teacher: " + (course.getTeacher() != null ? course.getTeacher().getName() : "N/A"));
-                        System.out.println("------------------------");
-                    }
+                   showCourses();
                     break;
                 case LOOKUP_COURSE:
-                    System.out.println("Please enter the name of the course you want to look up: ");
-                    courseName = scanner.nextLine();
-                    found = false;
-                    for (Course course : courseMap.values()) {
-                        if (course.getName().equalsIgnoreCase(courseName)) {
-                            System.out.println("Course ID: " + course.getCourseId());
-                            System.out.println("Name: " + course.getName());
-                            System.out.println("Price: $" + course.getPrice());
-                            System.out.println("Teacher: " + (course.getTeacher() != null ? course.getTeacher().getName() : "N/A"));
-                            System.out.println("------------------------");
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        System.out.println("No course found with the provided name.");
-                    }
+                    lookUpCourse(parts[1]);
                     break;
                 case SHOW_STUDENTS:
-                    // Show students
-                    for (Student student : studentMap.values()) {
-                        System.out.println("Student ID: " + student.getStudentId());
-                        System.out.println("Name: " + student.getName());
-                        System.out.println("Address: " + student.getAddress());
-                        System.out.println("Email: " + student.getEmail());
-                        System.out.printf("Course(s): %s%n", student.getCourse() != null ? student.getCourse().getName() : "N/A");
-                        System.out.println("------------------------");
-                    }
+                    showStudents();
                     break;
                 case LOOKUP_STUDENT:
-                    System.out.println("Please enter the name of the student you want to look up: ");
-                    studentName = scanner.nextLine();
-                    found = false;
-                    for (Student student : studentMap.values()) {
-                        if (student.getName().equalsIgnoreCase(studentName)) {
-                            System.out.println("Student ID: " + student.getStudentId());
-                            System.out.println("Name: " + student.getName());
-                            System.out.println("Address: " + student.getAddress());
-                            System.out.println("Email: " + student.getEmail());
-                            System.out.printf("Course(s): %s%n", student.getCourse() != null ? student.getCourse().getName() : "N/A");
-                            System.out.println("------------------------");
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        System.out.println("No teacher found with the provided name.");
-                    }
+                    lookUpStudents(parts[1]);
                     break;
                 case SHOW_TEACHERS:
-                    // Show teachers
-                    for(Teacher teacher : teacherMap.values()){
-                        System.out.println("Teacher ID: " + teacher.getTeacherId());
-                        System.out.println("Name: " + teacher.getName());
-                        System.out.println("Salary: $" + teacher.getSalary());
-                        System.out.println("------------------------");
-                    }
+                    showTeachers();
                     break;
                 case LOOKUP_TEACHER:
-                    System.out.println("Please enter the name of the teacher you want to look up: ");
-                    teacherName = scanner.nextLine();
-                    found = false;
-                    for (Teacher teacher : teacherMap.values()) {
-                        if (teacher.getName().equalsIgnoreCase(teacherName)) {
-                            System.out.println("Teacher ID: " + teacher.getTeacherId());
-                            System.out.println("Name: " + teacher.getName());
-                            System.out.println("Salary: $" + teacher.getSalary());
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        System.out.println("No teacher found with the provided name.");
-                    }
+                    lookUpTeacher(parts[1]);
                     break;
                 case SHOW_PROFIT:
-                    Collection<Course> courses=courseMap.values();
-                    Collection<Teacher> teachers=teacherMap.values();
-                    double profit=0;
-                    for(Course course:courses){
-                        profit+=course.getPrice();
-                    }
-                    for(Teacher teacher:teachers){
-                        profit-=teacher.getSalary();
-                    }
-                    System.out.println("The profit of the school is: "+profit);
-                    System.out.println("------------------------");
+                    showProfit();
                     break;
                 case EXIT:
                     exit = true;
@@ -354,5 +235,178 @@ public class Application {
             System.out.println("Invalid command. Please try again.");
         }
 
+    }
+
+    public void enroll(String studentId, String courseId){
+        Student foundStudent = null;
+        Course foundCourse = null;
+        for (String stuId : studentMap.keySet()) {
+            if (stuId.equalsIgnoreCase(studentId)) {
+                foundStudent = studentMap.get(stuId);
+                break;
+            }
+        }
+        for (String couId : courseMap.keySet()) {
+            if (couId.equalsIgnoreCase(courseId)) {
+                foundCourse = courseMap.get(couId);
+                break;
+            }
+        }
+        if (foundStudent != null && foundCourse != null) {
+            foundStudent.setCourse(foundCourse);
+            System.out.println("Student " + foundStudent.getName() + " has been enrolled in course " + foundCourse.getName() + ".");
+        } else {
+            System.out.println("Either the student or the course was not found.");
+        }
+    }
+
+    public void assign(String teacherId, String courseId){
+        Teacher foundTeacher = null;
+        Course foundCourse = null;
+        for (String teaId : teacherMap.keySet()) {
+            if (teaId.equalsIgnoreCase(teacherId)) {
+                foundTeacher = teacherMap.get(teaId);
+                break;
+            }
+        }
+        for (String couId : courseMap.keySet()) {
+            if (couId.equalsIgnoreCase(courseId)) {
+                foundCourse = courseMap.get(couId);
+                break;
+            }
+        }
+        if (foundTeacher != null && foundCourse != null) {
+            foundCourse.setTeacher(foundTeacher);
+            System.out.println("Teacher " + foundTeacher.getName() + " has been assigned to course " + foundCourse.getName() + ".");
+        } else {
+            System.out.println("Either the teacher or the course was not found.");
+        }
+    }
+
+    public void showCourses(){
+        for (Course course : courseMap.values()) {
+            System.out.println("Course ID: " + course.getCourseId());
+            System.out.println("Course Name: " + course.getName());
+            System.out.println("Price: $" + course.getPrice());
+            System.out.println("Teacher: " + (course.getTeacher() != null ? course.getTeacher().getName() : "N/A"));
+            System.out.println("------------------------");
+        }
+    }
+
+    public void lookUpCourse(String courseId){
+        boolean found = false;
+        for (String couId : courseMap.keySet()) {
+            if (couId.equalsIgnoreCase(courseId)) {
+                Course course = courseMap.get(couId);
+                System.out.println("Name: " + course.getName());
+                System.out.println("Price: $" + course.getPrice());
+                System.out.println("Teacher: " + (course.getTeacher() != null ? course.getTeacher().getName() : "N/A"));
+                System.out.println("------------------------");
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("No course found with the provided name.");
+        }
+    }
+
+    public void showStudents(){
+        for (Student student : studentMap.values()) {
+            System.out.println("Student ID: " + student.getStudentId());
+            System.out.println("Name: " + student.getName());
+            System.out.println("Address: " + student.getAddress());
+            System.out.println("Email: " + student.getEmail());
+            System.out.printf("Course(s): %s%n", student.getCourse() != null ? student.getCourse().getName() : "N/A");
+            System.out.println("------------------------");
+        }
+    }
+
+    public void lookUpStudents(String studentId){
+        boolean found = false;
+        for (String stuId : studentMap.keySet()) {
+            if (stuId.equalsIgnoreCase(studentId)) {
+                Student student = studentMap.get(stuId);
+                System.out.println("Name: " + student.getName());
+                System.out.println("Address: " + student.getAddress());
+                System.out.println("Email: " + student.getEmail());
+                System.out.printf("Course(s): %s%n", student.getCourse() != null ? student.getCourse().getName() : "N/A");
+                System.out.println("------------------------");
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("No teacher found with the provided name.");
+        }
+    }
+
+    public void showTeachers(){
+        for(Teacher teacher : teacherMap.values()){
+            System.out.println("Teacher ID: " + teacher.getTeacherId());
+            System.out.println("Name: " + teacher.getName());
+            System.out.println("Salary: $" + teacher.getSalary());
+            System.out.println("------------------------");
+        }
+    }
+
+    public void lookUpTeacher(String teacherId){
+        boolean found = false;
+        for (String teaId : teacherMap.keySet()) {
+            if (teaId.equalsIgnoreCase(teacherId)) {
+                Teacher teacher = teacherMap.get(teaId);
+                System.out.println("Name: " + teacher.getName());
+                System.out.println("Salary: $" + teacher.getSalary());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("No teacher found with the provided name.");
+        }
+    }
+
+    public double showProfit(){
+        Collection<Course> courses=courseMap.values();
+        Collection<Teacher> teachers=teacherMap.values();
+        double profit=0;
+        for(Course course:courses){
+            profit+=course.getPrice();
+        }
+        for(Teacher teacher:teachers){
+            profit-=teacher.getSalary();
+        }
+        System.out.println("The profit of the school is: "+profit);
+        System.out.println("------------------------");
+
+        return profit;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public Map<String, Teacher> getTeacherMap() {
+        return teacherMap;
+    }
+
+    public Map<String, Course> getCourseMap() {
+        return courseMap;
+    }
+
+    public Map<String, Student> getStudentMap() {
+        return studentMap;
+    }
+
+    public void setTeacherMap(Map<String, Teacher> teacherMap) {
+        this.teacherMap = teacherMap;
+    }
+
+    public void setCourseMap(Map<String, Course> courseMap) {
+        this.courseMap = courseMap;
+    }
+
+    public void setStudentMap(Map<String, Student> studentMap) {
+        this.studentMap = studentMap;
     }
 }
