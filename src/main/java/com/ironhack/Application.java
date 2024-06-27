@@ -85,7 +85,7 @@ public class Application {
     public void mapCreator(variableType vType){
         String name = "";
         while (true) {
-            System.out.println("Please enter the name of the new"+vType+": ");
+            System.out.println("Please enter the name of the new "+vType+": ");
             name = scanner.nextLine();
             if (!name.matches(".*\\d.*") && !name.isEmpty()) { //checks if it has a number or is empty
                 break;
